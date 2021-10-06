@@ -15,34 +15,39 @@ build:
   number: 0
   noarch: python
   script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+  entry_points:
+    - run_tsfresh = tsfresh.scripts.run_tsfresh:main
 
 requirements:
   host:
-    - python >=3.6
+    - python >=3.5
     - pip
     - setuptools_scm
     - setuptools
   run:
-    - python >=3.6
-    - setuptools
+    - python >=3.5
     - requests >=2.9.1
-    - numpy >=1.12.1
-    - pandas >=0.20.3,!=0.24.*
+    - numpy >=1.15.1
+    - pandas >=0.25.0
     - scipy >=1.2.0
-    - statsmodels >=0.8.0
+    - statsmodels >=0.9.0
     - patsy >=0.4.1
-    - scikit-learn >=0.19.0
+    - scikit-learn >=0.22.0
     - tqdm >=4.10.0
-    - dask >=0.15.2
-    - distributed >=1.18.3
+    - dask >=2.9.0
+    - distributed >=2.11.0
     - matrixprofile >=1.1.10,<2.0.0
     - stumpy >=1.7.2
 
 test:
-  requires:
-    - pip
-  commands:
-    - pip check
+  # 2021/10/06: pip check causes an error "matrixprofile 1.1.10 has requirement protobuf==3.11.2, but you have protobuf 3.17.2."
+  # but the upstream https://github.com/matrix-profile-foundation/matrixprofile/blob/v1.1.10/requirements.txt
+  # uses protobuf>=3.11.2,<4.0.0, so pip check was disable.
+  # Enable it when matrixprofile will be >= 1.1.11.
+  #requires:
+  #  - pip
+  #commands:
+  #  - pip check
   imports:
     - tsfresh
 
