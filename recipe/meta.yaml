@@ -13,6 +13,9 @@ source:
 
 build:
   number: 0
+  # 2021/10/6: Skip building on osx-arm64 because statsmodels>=0.9.0 isn't available on this platform yet.
+  # Skip building on aarch64 because dask + distributed version don't work well together on it yet.
+  skip: true  # [arm64 or aarch64]
   noarch: python
   script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
   entry_points:
