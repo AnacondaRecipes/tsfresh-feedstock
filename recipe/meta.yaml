@@ -13,6 +13,8 @@ source:
 
 build:
   number: 0
+  # 2021/10/6: Skip building on osx-arm64 because statsmodels>=0.9.0 isn't available on this platform yet.
+  skip: true  # [arm64]
   noarch: python
   script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
   entry_points:
