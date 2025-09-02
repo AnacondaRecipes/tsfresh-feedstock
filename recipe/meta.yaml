@@ -1,66 +1,80 @@
 {% set name = "tsfresh" %}
-{% set version = "0.18.0" %}
-{% set sha256 = "ebfc1505bc0c0148909a5009190ff49f8ffe4c8c661f7cafa9da6a6ae1a9abf4" %}
+{% set version = "0.21.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9942c2f78523ea12d0403b443293e45d4f1e78f750e5264fabddd2575cd75c43
 
 build:
   number: 0
-  # 2021/10/6: Skip building on osx-arm64 because statsmodels>=0.9.0 isn't available on this platform yet.
-  skip: true  # [arm64]
-  noarch: python
-  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+  skip: true  # [py<39]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vvv
   entry_points:
     - run_tsfresh = tsfresh.scripts.run_tsfresh:main
 
 requirements:
   host:
-    - python >=3.5
     - pip
-    - setuptools_scm
+    - python
     - setuptools
+    - setuptools_scm
+    - pyscaffold >=3.3a0,<4
   run:
-    - python >=3.5
+    - python
     - requests >=2.9.1
     - numpy >=1.15.1
     - pandas >=0.25.0
-    - scipy >=1.2.0
-    - statsmodels >=0.9.0
+    - scipy >=1.2.0  # [py<310]
+    - scipy >=1.14.0  # [py>=310]
+    - statsmodels >=0.13.0
     - patsy >=0.4.1
+    - pywavelets
+    - cloudpickle
     - scikit-learn >=0.22.0
     - tqdm >=4.10.0
-    - dask >=2.9.0
-    - distributed >=2.11.0
-    - matrixprofile >=1.1.10,<2.0.0
     - stumpy >=1.7.2
+    - distributed >=2.11.0
+    - dask >=2.9.0
+
+
+{% set tests_to_skip = "test_fourier_entropy" %}
+{% set tests_to_skip = tests_to_skip + " or test_spkt_welch_density" %}
+{% set tests_to_skip = tests_to_skip + " or test_dict_tsframe" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_long_tsframe" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_long_tsframe_no_value_column" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_simple_data_sample_four_timeseries" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_make_forecasting_frame_range" %}  # [win]
 
 test:
-  # 2021/10/06: pip check causes an error "matrixprofile 1.1.10 has requirement protobuf==3.11.2, but you have protobuf 3.17.2."
-  # but the upstream https://github.com/matrix-profile-foundation/matrixprofile/blob/v1.1.10/requirements.txt
-  # uses protobuf>=3.11.2,<4.0.0, so pip check was disable.
-  # Enable it when matrixprofile will be >= 1.1.11.
-  #requires:
-  #  - pip
-  #commands:
-  #  - pip check
+  source_files:
+    - tests
+  requires:
+    - pip
+    - pytest
+    - mock
+    - nbformat
   imports:
     - tsfresh
+  commands:
+    - pip check
+    - pytest tests -v -k "not ({{ tests_to_skip }})"
 
 about:
-  home: http://github.com/blue-yonder/tsfresh
+  home: https://github.com/blue-yonder/tsfresh
   license: MIT
   license_family: MIT
   license_file: LICENSE.txt
   summary: Automatic extraction of relevant features from time series
-
-  doc_url: http://tsfresh.readthedocs.io/
+  description: |
+    The package provides systematic time-series feature extraction by combining established algorithms 
+    from statistics, time-series analysis, signal processing, and nonlinear dynamics with a robust 
+    feature selection algorithm. In this context, the term time-series is interpreted in the broadest 
+    possible sense, such that any types of sampled data or even event sequences can be characterized.
+  doc_url: https://tsfresh.readthedocs.io/
   dev_url: https://github.com/blue-yonder/tsfresh
 
 extra:
