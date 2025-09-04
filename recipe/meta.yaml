@@ -43,6 +43,15 @@ requirements:
     - distributed >=2.11.0
     - matrixprofile >=1.1.10,<2.0.0
 
+# Attribute "dtype" are different
+{% set skip_windows_test = [
+  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_dict_tsframe",
+  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe",
+  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe_no_value_column",
+  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_simple_data_sample_four_timeseries",
+  "tests/units/utilities/test_dataframe_functions.py::MakeForecastingFrameTestCase::test_make_forecasting_frame_range"
+]%}
+
 test:
   source_files:
     - tests
@@ -61,7 +70,8 @@ test:
     - pyarrow
   commands:
     - pip check
-    - pytest -v tests --ignore=tests/integrations
+    - pytest -v tests --ignore=tests/integrations {{ skip_windows_test | join (" ")}} # [win]
+    - pytest -v tests --ignore=tests/integrations # [not win]
   imports:
     - tsfresh
 
