@@ -64,9 +64,6 @@ test:
     - pytest -v tests --ignore=tests/integrations
   imports:
     - tsfresh
-  commands:
-    - pip check
-    - pytest tests -v -k "not ({{ tests_to_skip }})"
 
 about:
   home: https://github.com/blue-yonder/tsfresh
