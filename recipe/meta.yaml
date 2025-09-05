@@ -45,11 +45,11 @@ requirements:
 
 # Attribute "dtype" are different
 {% set skip_windows_test = [
-  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_dict_tsframe",
-  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe",
-  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe_no_value_column",
-  "tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_simple_data_sample_four_timeseries",
-  "tests/units/utilities/test_dataframe_functions.py::MakeForecastingFrameTestCase::test_make_forecasting_frame_range"
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_dict_tsframe",
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe",
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe_no_value_column",
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_simple_data_sample_four_timeseries",
+  "--deselect=tests/units/utilities/test_dataframe_functions.py::MakeForecastingFrameTestCase::test_make_forecasting_frame_range"
 ]%}
 
 test:
