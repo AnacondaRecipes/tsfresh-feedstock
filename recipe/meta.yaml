@@ -1,5 +1,5 @@
 {% set name = "tsfresh" %}
-{% set version = "0.21.0" %}
+{% set version = "0.21.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 9942c2f78523ea12d0403b443293e45d4f1e78f750e5264fabddd2575cd75c43
+  sha256: 304316ebc20b7a33df39b9decdf1ae74c0877b8a36f1187ad2faf4e639d3f8bb
 
 build:
   number: 0
@@ -37,31 +37,43 @@ requirements:
     - scikit-learn >=0.22.0
     - tqdm >=4.10.0
     - stumpy >=1.7.2
+    - pywavelets
+  run_constrained:
+    - dataframe >=2.9.0
     - distributed >=2.11.0
-    - dask >=2.9.0
+    - matrixprofile >=1.1.10,<2.0.0
 
-
-{% set tests_to_skip = "test_fourier_entropy" %}
-{% set tests_to_skip = tests_to_skip + " or test_spkt_welch_density" %}
-{% set tests_to_skip = tests_to_skip + " or test_dict_tsframe" %}  # [win]
-{% set tests_to_skip = tests_to_skip + " or test_long_tsframe" %}  # [win]
-{% set tests_to_skip = tests_to_skip + " or test_long_tsframe_no_value_column" %}  # [win]
-{% set tests_to_skip = tests_to_skip + " or test_simple_data_sample_four_timeseries" %}  # [win]
-{% set tests_to_skip = tests_to_skip + " or test_make_forecasting_frame_range" %}  # [win]
+# Attribute "dtype" are different
+{% set skip_windows_test = [
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_dict_tsframe",
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe",
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_long_tsframe_no_value_column",
+  "--deselect=tests/units/feature_extraction/test_data.py::DataAdapterTestCase::test_simple_data_sample_four_timeseries",
+  "--deselect=tests/units/utilities/test_dataframe_functions.py::MakeForecastingFrameTestCase::test_make_forecasting_frame_range"
+]%}
 
 test:
   source_files:
     - tests
   requires:
     - pip
-    - pytest
-    - mock
-    - nbformat
-  imports:
-    - tsfresh
+    - pytest >=4.4.0
+    - pytest-xdist>=1.26.1
+    - pytest-benchmark>=3.0.0
+    - mock>=2.0.0
+    - matplotlib>=2.0.0
+    - seaborn>=0.7.1
+    - ipython>=5.3.0
+    - notebook>=4.4.1
+    - pandas-datareader>=0.5.0
+    - distributed
+    - pyarrow
   commands:
     - pip check
-    - pytest tests -v -k "not ({{ tests_to_skip }})"
+    - pytest -v tests --ignore=tests/integrations {{ skip_windows_test | join (" ")}} # [win]
+    - pytest -v tests --ignore=tests/integrations # [not win]
+  imports:
+    - tsfresh
 
 about:
   home: https://github.com/blue-yonder/tsfresh
