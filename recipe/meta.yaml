@@ -1,5 +1,5 @@
 {% set name = "tsfresh" %}
-{% set version = "0.21.1" %}
+{% set version = "0.21.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 304316ebc20b7a33df39b9decdf1ae74c0877b8a36f1187ad2faf4e639d3f8bb
+  sha256: a960f474498da07f5ed9992f2054db1d7483e224fdf91d89c28535c3af5cb17d
 
 build:
   number: 0
@@ -36,8 +36,7 @@ requirements:
     - cloudpickle
     - scikit-learn >=0.22.0
     - tqdm >=4.10.0
-    - stumpy >=1.7.2
-    - pywavelets
+    - stumpy >=1.11.1
   run_constrained:
     - dataframe >=2.9.0
     - distributed >=2.11.0
