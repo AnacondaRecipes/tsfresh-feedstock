@@ -36,6 +36,7 @@ requirements:
     - cloudpickle
     - scikit-learn >=0.22.0
     - tqdm >=4.10.0
+    - pywavelets
     - stumpy >=1.11.1
   run_constrained:
     - dataframe >=2.9.0
